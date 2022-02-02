@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\AppBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
+use PDO;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +42,7 @@ class DisableForeignKeyChecksCommand extends Command
     {
         $this->setName(self::NAME)
             ->setDescription(
-                'Toggles foreign key checking in Mysql.  Meant to be used ONLY with local fixture rebuilding via doctrine:fixtures:load --purge-with-truncate on mysql. See also https://github.com/doctrine/migrations/issues/43'
+                'Toggles foreign key checking in Mysql.  Meant to be used ONLY with local fixture rebuilding via doctrine:fixtures:load --purge-with-truncate on mysql, and requires the SUPER privileged. See also https://github.com/doctrine/migrations/issues/43'
             )
             ->addArgument(
                 self::ARG_ENABLE,
@@ -78,6 +80,15 @@ class DisableForeignKeyChecksCommand extends Command
         $enable = (bool) $input->getArgument(self::ARG_ENABLE);
         $connection = $this->entityManager->getConnection()->getWrappedConnection();
         $connection->exec(sprintf('SET FOREIGN_KEY_CHECKS = %d', $input->getArgument(self::ARG_ENABLE)));
+        // Set globally as well, so this persists between doctrine calls.
+        $connection->exec(sprintf('SET GLOBAL FOREIGN_KEY_CHECKS = %d', $input->getArgument(self::ARG_ENABLE)));
+
+        $result = $connection->query('SHOW VARIABLES LIKE "foreign_key_checks"');
+
+        $table = new Table($output);
+        $table->setHeaders(['Variable', 'Value'])
+            ->setRows($result->fetchAll(PDO::FETCH_ASSOC));
+        $table->render();
         if ($enable) {
             $io->info('Foreign key checks enabled.');
         } else {
@@ -87,3 +98,4 @@ class DisableForeignKeyChecksCommand extends Command
         return Command::SUCCESS;
     }
 }
+
