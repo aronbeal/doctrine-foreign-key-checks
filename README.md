@@ -5,9 +5,9 @@ Added in response to https://github.com/doctrine/migrations/issues/43.
 Intended for use in conjunction with `doctrine:fixtures:load`, e.g.:
 ```bash
 #!/bin/bash
-doctrine:schema:toggle-foreign-key-checks 0 \
-  && doctrine:fixtures:load --purge-with-truncate \
-  && doctrine:schema:toggle-foreign-key-checks 1;
+bin/console doctrine:schema:toggle-foreign-key-checks 0 \
+  && bin/console doctrine:fixtures:load --purge-with-truncate \
+  && bin/console  doctrine:schema:toggle-foreign-key-checks 1;
 ```
 
 ## Usage:
