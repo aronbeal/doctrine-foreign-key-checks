@@ -13,4 +13,4 @@ bin/console doctrine:schema:toggle-foreign-key-checks 0 \
 ## Usage:
 
 - Include the command in the appropriate directory in your Symfony repository.
-- Invoke as a console command, e.g. ` doctrine:schema:toggle-foreign-key-checks 1` or `doctrine:schema:toggle-foreign-key-checks 0`
+- Invoke as a console command, e.g. `bin/console doctrine:schema:toggle-foreign-key-checks 1` or `bin/console doctrine:schema:toggle-foreign-key-checks 0`
