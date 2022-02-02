@@ -10,6 +10,8 @@ bin/console doctrine:schema:toggle-foreign-key-checks 0 \
   && bin/console  doctrine:schema:toggle-foreign-key-checks 1;
 ```
 
+This is not a viable workaround for many cases - the variable must be set globally to persist between sessions, which means that `SUPER` privilege is required.  For our use (local development), we're able to grant that, so the solution works.   Offered without warranty, feel free to use or repurpose if it helps your use case.
+
 ## Usage:
 
 - Include the command in the appropriate directory in your Symfony repository.
